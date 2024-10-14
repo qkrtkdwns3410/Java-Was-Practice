@@ -17,12 +17,13 @@ import java.net.Socket;
  */
 public class WebServer {
     public static void main(String[] args) {
-        File receiveFile = new File("src/main/resources/chap01/server_receive.txt");
         try {
             ServerSocket server = new ServerSocket(8001);
             System.out.println("클라이언트로부터 접속을 기다리고 있습니다.");
             
+            File receiveFile = new File("src/main/resources/chap01/server_receive.txt");
             File sendFile = new File("src/main/resources/chap01/server_send.txt");
+            
             FileOutputStream fos = new FileOutputStream(receiveFile);
             FileInputStream fis = new FileInputStream(sendFile);
             
