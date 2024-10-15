@@ -1,1 +1,4 @@
-helloWorld
+GET /googleImg.png HTTP/1.1
+Host: localhost:8080
+ContentType: image/png
+Connection: Close
