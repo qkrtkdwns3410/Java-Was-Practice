@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Embed with API Data</title>
+    <style>
+        #player {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>유튜브 비디오 재생</h1>
+
+    <h2>비디오 정보</h2>
+    <div>
+        <p><strong>제목:</strong> <span id="title"></span></p>
+        <p><strong>설명:</strong> <span id="description"></span></p>
+        <p><strong>조회수:</strong> <span id="viewCount"></span></p>
+    </div>
+    <!-- YouTube 비디오 플레이어 -->
+    <div id="player"></div>
+
+    <script>
+        // YouTube 비디오 ID 고정
+        const videoId = '98it62wL6wM';
+
+        // YouTube Data API 키를 여기에 추가하세요
+        const API_KEY = 'AIzaSyB1hE3YsDHpU2v_trtAFdMJPZLdbqC5ESI';
+
+        const PART = 'snippet,statistics,status,contentDetails,topicDetails,recordingDetails,player';
+
+        // YouTube IFrame Player API 로드
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let player;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '500',
+                width: '300',
+                videoId: videoId,  // 고정된 비디오 ID로 설정
+            });
+            console.log(player);
+        }
+
+        // 서버에서 비디오 데이터를 가져오는 함수
+        async function loadVideoData() {
+            try {
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=${PART}&id=${videoId}&key=${API_KEY}`);
+                const videoData = await response.json();
+                const videoDetails = videoData.items[0];
+                displayVideoData(videoDetails);
+            } catch (error) {
+                console.error('Error loading video details:', error);
+            }
+        }
+
+        // 비디오 데이터를 화면에 표시하는 함수
+        function displayVideoData(videoDetails) {
+            console.log(videoDetails);
+
+            document.getElementById('title').innerText = videoDetails.snippet.title;
+            document.getElementById('description').innerText = videoDetails.snippet.description;
+            document.getElementById('viewCount').innerText = videoDetails.statistics.viewCount;
+        }
+
+        async function loadActivities() {
+            try {
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/subscriptions?part=contentDetails,snippet, id, subscriberSnippet&mine=true&key=${API_KEY}`);
+                const videoData = await response.json();
+                console.log(videoData);
+            } catch (error) {
+                console.error('Error loading video details:', error);
+            }
+        }
+
+        // 페이지가 로드되면 비디오 데이터 가져오기
+        window.onload = function() {
+            // loadVideoData();
+            loadActivities();
+        }
+    </script>
+
+</body>
+</html>
