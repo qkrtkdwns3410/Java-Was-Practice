@@ -24,8 +24,27 @@ public class 변화하는요구사항대응하기 {
                 new Apple(Color.GREEN, 400)
         );
         
-        prettyPrintApple(inventories, new ApplePrettyPrintFormatter());
+        Thread t = new Thread(() -> System.out.println("Hello world"));
+        
+        t.start();  // 스레드를 시작
     }
+    
+    public interface Predicate<T> {
+        boolean test(T t);
+    }
+    
+    public static <T> List<T> filter(List<T> list, Predicate<T> predicate) { // 형식 파라미터
+        List<T> result = new ArrayList<>();
+        
+        for (T t : list) {
+            if (predicate.test(t)) {
+                result.add(t);
+            }
+        }
+        
+        return result;
+    }
+    
     
     public static void prettyPrintApple(List<Apple> inventories, AppleFormatter predicate) {
         for (Apple apple : inventories) {
@@ -87,7 +106,7 @@ public class 변화하는요구사항대응하기 {
     }
     
     //동작 파라미터화
-    public static List<Apple> filterApples(List<Apple> inventory, ApplePredicate predicate) {
+/*    public static List<Apple> filterApples(List<Apple> inventory, ApplePredicate predicate) {
         List<Apple> result = new ArrayList<>();
         
         for (Apple apple : inventory) {
@@ -97,7 +116,7 @@ public class 변화하는요구사항대응하기 {
         }
         
         return result;
-    }
+    }*/
     
     static class Apple {
         private Color color;
