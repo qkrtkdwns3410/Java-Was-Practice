@@ -1,5 +1,8 @@
 package modern_java.chap02;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.List;
  * 24. 10. 18.        ipeac       최초 생성
  */
 public class 변화하는요구사항대응하기 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         List<Apple> inventories = List.of(
                 new Apple(Color.RED, 100),
                 new Apple(Color.GREEN, 200),
@@ -24,9 +27,32 @@ public class 변화하는요구사항대응하기 {
                 new Apple(Color.GREEN, 400)
         );
         
-        Thread t = new Thread(() -> System.out.println("Hello world"));
+        변화하는요구사항대응하기 processor = new 변화하는요구사항대응하기();
         
-        t.start();  // 스레드를 시작
+        //한줄 읽기
+        String result = processor.processFile(br -> br.readLine());
+        System.out.println(result);
+        
+        //두줄 읽기
+        String result2 = processor.processFile(br -> br.readLine() + br.readLine());
+        System.out.println(result2);
+    }
+    
+    public String processFile() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
+            return reader.readLine();
+        }
+    }
+    
+    public String processFile(BufferedReaderProcessor processor) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader("data.txt"))) {
+            return processor.process(br);
+        }
+    }
+    
+    @FunctionalInterface
+    public interface BufferedReaderProcessor {
+        String process(BufferedReader br) throws IOException;
     }
     
     public interface Predicate<T> {
