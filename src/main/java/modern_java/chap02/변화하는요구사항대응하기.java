@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  * packageName    : modern_java.chap02
@@ -20,22 +22,27 @@ import java.util.List;
  */
 public class 변화하는요구사항대응하기 {
     public static void main(String[] args) throws IOException {
-        List<Apple> inventories = List.of(
-                new Apple(Color.RED, 100),
-                new Apple(Color.GREEN, 200),
-                new Apple(Color.RED, 300),
-                new Apple(Color.GREEN, 400)
-        );
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 0; i < 100_000_000; i++) {
+            numbers.add(i);
+        }
         
-        변화하는요구사항대응하기 processor = new 변화하는요구사항대응하기();
         
-        //한줄 읽기
-        String result = processor.processFile(br -> br.readLine());
-        System.out.println(result);
+        // IntPredicate 사용
+        IntPredicate evenNumberIntPredicate = i -> i % 2 == 0;
+        long startTime = System.nanoTime();
+        long countIntPredicate = numbers.stream().filter(evenNumberIntPredicate::test).count();
+        long endTime = System.nanoTime();
+        long durationIntPredicate = endTime - startTime;
+        System.out.println("IntPredicate duration: " + durationIntPredicate + " nanoseconds");
         
-        //두줄 읽기
-        String result2 = processor.processFile(br -> br.readLine() + br.readLine());
-        System.out.println(result2);
+        // Predicate<Integer> 사용
+        Predicate<Integer> evenNumberPredicate = i -> i % 2 == 0;
+        startTime = System.nanoTime();
+        long countPredicate = numbers.stream().filter(evenNumberPredicate).count();
+        endTime = System.nanoTime();
+        long durationPredicate = endTime - startTime;
+        System.out.println("Predicate<Integer> duration: " + durationPredicate + " nanoseconds");
     }
     
     public String processFile() throws IOException {
@@ -55,9 +62,7 @@ public class 변화하는요구사항대응하기 {
         String process(BufferedReader br) throws IOException;
     }
     
-    public interface Predicate<T> {
-        boolean test(T t);
-    }
+
     
     public static <T> List<T> filter(List<T> list, Predicate<T> predicate) { // 형식 파라미터
         List<T> result = new ArrayList<>();
