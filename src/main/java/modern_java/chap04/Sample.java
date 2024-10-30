@@ -1,6 +1,7 @@
 package modern_java.chap04;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * packageName    : modern_java.chap04
@@ -26,6 +27,35 @@ public class Sample {
                 new Dish("prawns", false, 300, Dish.Type.FISH),
                 new Dish("salmon", false, 450, Dish.Type.FISH)
         );
+        
+        //4.3.1  스트림의 일회성
+        //Stream<Dish> stream = menu.stream();
+        //stream.forEach(System.out::println);
+        //stream.forEach(System.out::println);
+        //
+        
+        // 4.4.1 중간 연산
+ /*       List<String> names = menu.stream()
+                .filter(dish -> {
+                    System.out.println("filtering: " + dish.getName());
+                    return dish.getCalories() > 300;
+                })
+                .map(dish -> {
+                    System.out.println("mapping: " + dish.getName());
+                    return dish.getName();
+                })
+                .limit(3)
+                .toList();*/
+        
+        // 5.1.1 프레디케이트로 필터링
+        menu.stream()
+                .filter(Dish::isVegetarian)
+                .forEach(System.out::println);
+        
+        // 5.1.2 고유 요소 필터링
+        Stream.of(1, 2, 1, 3, 3, 2, 4)
+                .distinct()
+                .forEach(System.out::println);
     }
     
     public static class Dish {
