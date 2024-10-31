@@ -1,21 +1,20 @@
 package modern_java.chap04;
 
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * packageName    : modern_java.chap04
- * fileName       : Sample
- * author         : ipeac
- * date           : 24. 10. 30.
+ * fileName       : Streams
+ * author         : sjunpark
+ * date           : 24. 10. 28.
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 24. 10. 30.        ipeac       최초 생성
+ * 24. 10. 28.        sjunpark       최초 생성
  */
-public class Sample {
+public class Streams {
     public static void main(String[] args) {
         List<Dish> menu = List.of(
                 new Dish("pork", false, 800, Dish.Type.MEAT),
@@ -29,46 +28,31 @@ public class Sample {
                 new Dish("salmon", false, 450, Dish.Type.FISH)
         );
         
-        //takeWhile 사용하기
-        /*menu.stream()
-                .takeWhile(dish -> {
-                    System.out.println("takeWhile : " + dish.getName());
-                    return dish.getCalories() < 320;
-                })
-                .forEach(System.out::println);
-        
-        System.out.println("==================================");
-        
-        //dropWhile 사용
+        //싱글 스레드처리
+        long start = System.currentTimeMillis();
         menu.stream()
-                .dropWhile(dish -> {
-                    System.out.println("dropWhile : " + dish.getName());
-                    return dish.getCalories() < 320;
-                })
-                .forEach(System.out::println);
+                .filter(d -> d.getCalories() > 400) // 400 칼로리 이하의 요리 선택
+                .sorted(Comparator.comparing(Dish::getCalories)) // 칼로리로 요리 정렬
+                .map(Dish::getName) // 요리명 추출
+                .forEach(System.out::println); // 요리명 출력
         
-        System.out.println("==================================");
+        long end = System.currentTimeMillis();
         
-        // 처음 등장하는 두 고기 요리 필터링
+        System.out.println("싱글 스레드 처리 시간 : " + (end - start));
+        
+        //병렬 처리
+        start = System.currentTimeMillis();
+        
         menu.stream()
-                .filter(dish -> dish.getType() == Dish.Type.MEAT)
-                .limit(2)
-                .forEach(System.out::println);*/
+                .parallel()
+                .filter(d -> d.getCalories() > 400) // 400 칼로리 이하의 요리 선택
+                .sorted(Comparator.comparing(Dish::getCalories)) // 칼로리로 요리 정렬
+                .map(Dish::getName) // 요리명 추출
+                .forEach(System.out::println); // 요리명 출력
         
-        /*menu.stream()
-                .map(Dish::getName)
-                .map(String::length)
-                .forEach(System.out::println);*/
+        end = System.currentTimeMillis();
         
-        //스트림 평면화
-        menu.stream()
-                .map(Dish::getName)
-                .flatMap(word -> Arrays.stream(word.split("")))
-                .distinct()
-                .forEach(System.out::println);
-        
-        String[] arrayOfWords = {"Goodbye", "World"};
-        Stream<String> streamOfWords = Arrays.stream(arrayOfWords);
+        System.out.println("병렬 처리 시간 : " + (end - start));
     }
     
     public static class Dish {
