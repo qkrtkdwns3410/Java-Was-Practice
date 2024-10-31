@@ -2,7 +2,6 @@ package modern_java.chap04;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * packageName    : modern_java.chap04
@@ -61,14 +60,31 @@ public class Sample {
                 .forEach(System.out::println);*/
         
         //스트림 평면화
-        menu.stream()
+/*        menu.stream()
                 .map(Dish::getName)
                 .flatMap(word -> Arrays.stream(word.split("")))
                 .distinct()
                 .forEach(System.out::println);
         
         String[] arrayOfWords = {"Goodbye", "World"};
-        Stream<String> streamOfWords = Arrays.stream(arrayOfWords);
+        Stream<String> streamOfWords = Arrays.stream(arrayOfWords);*/
+        
+        //5-2 매핑
+        // 숫자 리스트가 주어진 경우 각 숫자의 제곱근으로 이루어진 리스트 반환
+        // [1,2,3,4,5] -> [1,4,9,16,25] 반환
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+        numbers.stream()
+                .map(n -> n * n)
+                .forEach(System.out::println);
+        
+        // 2개의 숫자 리스트가 있는 경우 모든 숫자 쌍의 리스트 반환
+        // 2개의 리스트 [1,2,3],  [3,4] -> [(1,3), (1,4), (2,3), (2,4), (3,3), (3,4)] 반환
+        List<Integer> numbers1 = Arrays.asList(1, 2, 3);
+        List<Integer> numbers2 = Arrays.asList(3, 4);
+        
+        numbers1.stream()
+                .flatMap(i -> numbers2.stream().map(j -> new int[]{i, j}))
+                .forEach(ints -> System.out.println("(" + ints[0] + ", " + ints[1] + ")"));
     }
     
     public static class Dish {
